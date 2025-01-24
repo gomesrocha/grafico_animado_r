@@ -1,10 +1,12 @@
 # Instale os pacotes necessários (caso ainda não tenha)
 if (!require(ggplot2)) install.packages("ggplot2")
 if (!require(gganimate)) install.packages("gganimate")
+if (!require(scales)) install.packages("scales")
 
 # Carregar as bibliotecas
 library(ggplot2)
 library(gganimate)
+library(scales)
 
 # Dados
 dados <- data.frame(
@@ -21,12 +23,14 @@ grafico <- ggplot(dados, aes(x = AnoMes, group = 1)) +
   geom_line(aes(y = PercentualPIB * 100000, color = "% do PIB"), size = 1.2) +
   geom_point(aes(y = PercentualPIB * 100000, color = "% do PIB"), size = 3) +
   scale_y_continuous(
+    limits = c(0, max(dados$Saldo) * 1.1),  # Eixo Y começa do zero
+    labels = label_comma(),  # Formata os números com separadores de milhar
     name = "Saldo da Dívida (em milhões)",
     sec.axis = sec_axis(~ . / 100000, name = "% do PIB")
   ) +
   labs(
     title = "Evolução da Dívida Pública e Consumo do PIB",
-    subtitle = "Dados de 2022 a 2024",
+    subtitle = "Dados de 2022 a 2024: https://www.bcb.gov.br/estatisticas/estatisticasfiscais",
     x = "Período",
     y = "Saldo da Dívida (em milhões)",
     color = "Legenda"
@@ -49,4 +53,4 @@ animate(
 )
 
 # Salvar o gráfico animado
-anim_save("evolucao_divida_corrigido.gif")
+anim_save("evolucao_divida_formatado.gif")
